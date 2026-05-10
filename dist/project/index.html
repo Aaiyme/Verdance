@@ -1,0 +1,1305 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verdance Cafe & Kitchen</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css')}}"
+    />
+    <style>
+      /* Only what Tailwind can't do */
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      @keyframes popIn {
+        from {
+          transform: scale(0.9);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+      .pop-in {
+        animation: popIn 0.18s ease forwards;
+      }
+    </style>
+  </head>
+
+  <body
+    class="bg-slate-50 h-screen flex flex-col overflow-hidden text-slate-800"
+  >
+    <!-- ══════════════════════════════════════
+       HEADER
+  ══════════════════════════════════════ -->
+    <header
+      class="shrink-0 h-16 bg-white border-b-2 border-emerald-500 flex items-center justify-between px-4 md:px-10 z-50"
+    >
+      <div>
+        <h1
+          class="text-lg md:text-2xl font-black tracking-tighter text-slate-800"
+        >
+          <span class="text-emerald-600">VERDANCE</span> CAFE &
+          <span class="text-amber-500">KITCHEN</span>
+        </h1>
+        <p
+          class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.3em]"
+        >
+          Naic, Cavite Branch
+        </p>
+      </div>
+      <a
+        href="admin_log.html"
+        class="flex items-center gap-2 hover:opacity-70 transition"
+      >
+        <span
+          class="hidden sm:block text-xs font-bold text-slate-500 uppercase tracking-widest"
+          >Admin</span
+        >
+        <div
+          class="w-9 h-9 bg-slate-900 rounded-full flex items-center justify-center text-white text-sm"
+        >
+          👤
+        </div>
+      </a>
+    </header>
+
+    <!-- ══════════════════════════════════════
+       MAIN
+       Mobile:  column — top nav bar + menu + floating cart btn
+       Desktop: row   — sidebar | menu | cart panel
+  ══════════════════════════════════════ -->
+    <main class="flex-1 flex flex-col md:flex-row overflow-hidden">
+      <!-- ── SIDEBAR / TOP NAV ── -->
+      <nav
+        class="bg-white border-b md:border-b-0 md:border-r border-slate-200 shrink-0 flex flex-row md:flex-col items-center gap-3 md:gap-6 px-3 md:px-0 py-2 md:py-8 overflow-x-auto md:overflow-y-auto md:overflow-x-hidden no-scrollbar w-full md:w-32"
+      >
+        <!-- Openers + sub-menu -->
+        <div class="shrink-0 flex flex-col items-center">
+          <button
+            id="nav-openers"
+            onclick="toggleOpeners()"
+            class="nav-item flex flex-col items-center gap-1 px-2 py-2 rounded-2xl transition-all w-16 md:w-24 hover:bg-slate-100 active:scale-95"
+          >
+            <div
+              class="nav-icon w-10 h-10 md:w-16 md:h-16 bg-slate-100 rounded-2xl md:rounded-3xl flex items-center justify-center text-xl md:text-2xl transition-all"
+            >
+              🥗
+            </div>
+            <span
+              class="nav-label text-[8px] md:text-[10px] font-black text-slate-500 uppercase tracking-wider text-center leading-tight"
+              >Openers</span
+            >
+          </button>
+
+          <div
+            id="openers-sub"
+            class="hidden flex-col gap-1 mt-2 w-20 text-center"
+          >
+            <button
+              id="nav-starters"
+              onclick="renderMenu('starters', 'nav-starters')"
+              class="sub-btn text-[9px] font-bold text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg px-1 py-1.5 transition-all"
+            >
+              Starters
+            </button>
+            <button
+              id="nav-soup"
+              onclick="renderMenu('soup', 'nav-soup')"
+              class="sub-btn text-[9px] font-bold text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg px-1 py-1.5 transition-all"
+            >
+              Soup
+            </button>
+            <button
+              id="nav-salad"
+              onclick="renderMenu('salad', 'nav-salad')"
+              class="sub-btn text-[9px] font-bold text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg px-1 py-1.5 transition-all"
+            >
+              Salad
+            </button>
+          </div>
+        </div>
+
+        <div class="hidden md:block w-12 h-px bg-slate-200 shrink-0"></div>
+        <div class="md:hidden w-px h-7 bg-slate-200 shrink-0"></div>
+
+        <!-- Main Courses + sub-menu -->
+        <div class="shrink-0 flex flex-col items-center">
+          <button
+            id="nav-main"
+            onclick="toggleMainCourses()"
+            class="nav-item flex flex-col items-center gap-1 px-2 py-2 rounded-2xl transition-all w-16 md:w-24 hover:bg-slate-100 active:scale-95"
+          >
+            <div
+              class="nav-icon w-10 h-10 md:w-16 md:h-16 bg-slate-100 rounded-2xl md:rounded-3xl flex items-center justify-center text-xl md:text-2xl transition-all"
+            >
+              🍽️
+            </div>
+            <span
+              class="nav-label text-[8px] md:text-[10px] font-black text-slate-500 uppercase tracking-wider text-center leading-tight"
+              >Main</span
+            >
+          </button>
+
+          <div
+            id="maincourses-sub"
+            class="hidden flex-col gap-1 mt-2 w-20 text-center"
+          >
+            <button
+              id="nav-breakfast"
+              onclick="renderMenu('breakfast', 'nav-breakfast')"
+              class="sub-btn text-[9px] font-bold text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg px-1 py-1.5 transition-all"
+            >
+              All-Day Breakfast
+            </button>
+            <button
+              id="nav-pasta"
+              onclick="renderMenu('pasta&noodles', 'nav-pasta')"
+              class="sub-btn text-[9px] font-bold text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg px-1 py-1.5 transition-all"
+            >
+              Pasta & Noodles
+            </button>
+            <button
+              id="nav-pizza"
+              onclick="renderMenu('pizza&sandwiches', 'nav-pizza')"
+              class="sub-btn text-[9px] font-bold text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg px-1 py-1.5 transition-all"
+            >
+              Pizza & Sandwiches
+            </button>
+          </div>
+        </div>
+
+        <div class="hidden md:block w-12 h-px bg-slate-200 shrink-0"></div>
+        <div class="md:hidden w-px h-7 bg-slate-200 shrink-0"></div>
+
+        <!-- Beverages + sub-menu -->
+        <div class="shrink-0 flex flex-col items-center">
+          <button
+            id="nav-beverages"
+            onclick="toggleBeverages()"
+            class="nav-item flex flex-col items-center gap-1 px-2 py-2 rounded-2xl transition-all w-16 md:w-24 hover:bg-slate-100 active:scale-95"
+          >
+            <div
+              class="nav-icon w-10 h-10 md:w-16 md:h-16 bg-slate-100 rounded-2xl md:rounded-3xl flex items-center justify-center text-xl md:text-2xl transition-all"
+            >
+              🥤
+            </div>
+            <span
+              class="nav-label text-[8px] md:text-[10px] font-black text-slate-500 uppercase tracking-wider text-center leading-tight"
+              >Beverages</span
+            >
+          </button>
+
+          <div
+            id="beverages-sub"
+            class="hidden flex-col gap-1 mt-2 w-20 text-center"
+          >
+            <button
+              id="nav-hot"
+              onclick="renderMenu('hot', 'nav-hot')"
+              class="sub-btn text-[9px] font-bold text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg px-1 py-1.5 transition-all"
+            >
+              Hot Coffee
+            </button>
+            <button
+              id="nav-iced"
+              onclick="renderMenu('iced', 'nav-iced')"
+              class="sub-btn text-[9px] font-bold text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg px-1 py-1.5 transition-all"
+            >
+              Iced Coffee
+            </button>
+            <button
+              id="nav-matcha"
+              onclick="renderMenu('matcha', 'nav-matcha')"
+              class="sub-btn text-[9px] font-bold text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg px-1 py-1.5 transition-all"
+            >
+              Matcha Coffee
+            </button>
+            <button
+              id="nav-juice"
+              onclick="renderMenu('juice', 'nav-juice')"
+              class="sub-btn text-[9px] font-bold text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg px-1 py-1.5 transition-all"
+            >
+              Fresh Juice
+            </button>
+            <button
+              id="nav-coffee-based"
+              onclick="renderMenu('coffee-frappe', 'nav-coffee-frappe')"
+              class="sub-btn text-[9px] font-bold text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg px-1 py-1.5 transition-all"
+            >
+              Coffee-Based Frappe
+            </button>
+            <button
+              id="nav-soda"
+              onclick="renderMenu('soda', 'nav-soda')"
+              class="sub-btn text-[9px] font-bold text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg px-1 py-1.5 transition-all"
+            >
+              Soda
+            </button>
+            <button
+              id="nav-non-coffee"
+              onclick="renderMenu('non-coffee-frappe', 'nav-non-coffee-frappe')"
+              class="sub-btn text-[9px] font-bold text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg px-1 py-1.5 transition-all"
+            >
+              Non-Coffee Frappe
+            </button>
+            <button
+              id="nav-water"
+              onclick="renderMenu('water', 'nav-water')"
+              class="sub-btn text-[9px] font-bold text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg px-1 py-1.5 transition-all"
+            >
+              Water
+            </button>
+          </div>
+        </div>
+
+        <div class="hidden md:block w-12 h-px bg-slate-200 shrink-0"></div>
+        <div class="md:hidden w-px h-7 bg-slate-200 shrink-0"></div>
+
+        <div class="shrink-0 flex flex-col items-center">
+          <button
+            id="nav-closer"
+            onclick="toggleCloser()"
+            class="nav-item flex flex-col items-center gap-1 px-2 py-2 rounded-2xl transition-all w-16 md:w-24 hover:bg-slate-100 active:scale-95"
+          >
+            <div
+              class="nav-icon w-10 h-10 md:w-16 md:h-16 bg-slate-100 rounded-2xl md:rounded-3xl flex items-center justify-center text-xl md:text-2xl transition-all"
+            >
+              🥤
+            </div>
+            <span
+              class="nav-label text-[8px] md:text-[10px] font-black text-slate-500 uppercase tracking-wider text-center leading-tight"
+              >Closer</span
+            >
+          </button>
+
+          <div
+            id="closer-sub"
+            class="hidden flex-col gap-1 mt-2 w-20 text-center"
+          >
+            <button
+              id="nav-alcohol"
+              onclick="renderMenu('alcohol', 'nav-alcohol')"
+              class="sub-btn text-[9px] font-bold text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg px-1 py-1.5 transition-all"
+            >
+              Alcohol
+            </button>
+            <button
+              id="nav-sweet"
+              onclick="renderMenu('sweet', 'nav-sweet')"
+              class="sub-btn text-[9px] font-bold text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg px-1 py-1.5 transition-all"
+            >
+              Sweets
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <!-- ── MENU GRID ── -->
+      <section
+        id="menu-grid"
+        class="flex-1 p-4 md:p-8 overflow-y-auto bg-slate-50 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-6 content-start no-scrollbar"
+      ></section>
+
+      <!-- ── FLOATING CART BUTTON (mobile only) ── -->
+      <div class="md:hidden fixed bottom-5 right-4 z-40">
+        <button
+          onclick="openCart()"
+          class="flex items-center gap-2 bg-slate-900 text-white font-bold text-sm px-5 py-3 rounded-full shadow-2xl hover:bg-emerald-600 transition-all active:scale-95"
+        >
+          🧾 View Order
+          <span
+            id="cart-bubble"
+            class="hidden bg-amber-400 text-slate-900 text-[10px] font-black rounded-full w-5 h-5 items-center justify-center"
+            >0</span
+          >
+        </button>
+      </div>
+
+      <!-- ── RECEIPT PANEL ──
+         Mobile: full-screen slide-up sheet
+         Desktop: fixed right panel always visible
+    ── -->
+      <aside
+        id="cart-panel"
+        class="fixed inset-0 z-30 flex flex-col bg-white transition-transform duration-300 ease-in-out translate-y-full md:static md:translate-y-0 md:w-80 lg:w-96 md:border-l md:border-slate-200 md:shadow-2xl"
+      >
+        <!-- Receipt Header -->
+        <div
+          class="flex items-center justify-between px-5 py-4 border-b border-slate-100 shrink-0"
+        >
+          <div class="flex items-center gap-2">
+            <h2 class="text-base font-black text-slate-900">Current Order</h2>
+            <span
+              id="order-badge"
+              class="hidden bg-amber-400 text-slate-900 text-[9px] font-black rounded-full px-2 py-0.5 leading-tight"
+              >0</span
+            >
+          </div>
+          <div class="flex items-center gap-2">
+            <!-- Clear All — safe modal -->
+            <button
+              onclick="openClearModal()"
+              class="text-[11px] font-bold text-slate-400 border border-slate-200 rounded-xl px-3 py-1.5 hover:text-red-500 hover:border-red-300 transition-all active:scale-95"
+            >
+              Clear All
+            </button>
+            <!-- Close (mobile only) -->
+            <button
+              onclick="closeCart()"
+              class="md:hidden text-slate-400 hover:text-slate-700 text-xl leading-none transition-all"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+
+        <!-- Receipt Items -->
+        <div
+          id="receipt-list"
+          class="flex-1 overflow-y-auto px-5 py-3 no-scrollbar"
+        >
+          <p class="text-sm text-slate-400 italic text-center mt-16">
+            Tap items to order
+          </p>
+        </div>
+
+        <!-- Receipt Footer -->
+        <div
+          class="shrink-0 px-5 py-5 bg-slate-50 border-t border-slate-200 space-y-4"
+        >
+          <div class="flex justify-between items-center">
+            <span
+              class="text-xs font-bold text-slate-400 uppercase tracking-widest"
+              >Total Amount</span
+            >
+            <span id="total-price" class="text-3xl font-black text-slate-900"
+              >₱0</span
+            >
+          </div>
+          <button
+            id="process-btn"
+            onclick="openProcessModal()"
+            disabled
+            class="w-full bg-slate-900 text-white py-4 rounded-full font-bold text-base hover:bg-emerald-600 transition-all active:scale-95 shadow-lg disabled:bg-slate-300 disabled:cursor-not-allowed disabled:shadow-none disabled:active:scale-100"
+          >
+            Process Order
+          </button>
+        </div>
+      </aside>
+    </main>
+
+    <!-- ══════════════════════════════════════
+       CLEAR ALL MODAL (safe — no browser confirm())
+  ══════════════════════════════════════ -->
+    <div
+      id="clear-modal"
+      class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 px-6"
+      onclick="handleModalBackdrop(event, 'clear-modal')"
+    >
+      <div
+        class="pop-in bg-white rounded-3xl p-7 w-full max-w-xs shadow-2xl text-center"
+      >
+        <div class="text-4xl mb-3">🗑️</div>
+        <h3 class="text-lg font-black text-slate-900 mb-1">
+          Clear entire order?
+        </h3>
+        <p class="text-sm text-slate-400 mb-6 leading-relaxed">
+          All items will be removed.<br />This cannot be undone.
+        </p>
+        <div class="flex gap-3">
+          <button
+            onclick="closeClearModal()"
+            class="flex-1 py-3 rounded-2xl bg-slate-100 text-slate-700 font-bold text-sm hover:bg-slate-200 transition-all active:scale-95"
+          >
+            Keep Order
+          </button>
+          <button
+            onclick="confirmClear()"
+            class="flex-1 py-3 rounded-2xl bg-red-500 text-white font-bold text-sm hover:bg-red-600 transition-all active:scale-95"
+          >
+            Yes, Clear
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+       PROCESS ORDER MODAL
+  ══════════════════════════════════════ -->
+    <div
+      id="process-modal"
+      class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 px-6"
+      onclick="handleModalBackdrop(event, 'process-modal')"
+    >
+      <div
+        class="pop-in bg-white rounded-3xl p-7 w-full max-w-xs shadow-2xl text-center"
+      >
+        <div class="text-4xl mb-3">🧾</div>
+        <h3 class="text-lg font-black text-slate-900 mb-1">Confirm Order</h3>
+        <p class="text-sm text-slate-400 mb-1">Total amount due:</p>
+        <p id="modal-total" class="text-4xl font-black text-emerald-600 mb-6">
+          ₱0
+        </p>
+        <div class="flex gap-3">
+          <button
+            onclick="closeProcessModal()"
+            class="flex-1 py-3 rounded-2xl bg-slate-100 text-slate-700 font-bold text-sm hover:bg-slate-200 transition-all active:scale-95"
+          >
+            Cancel
+          </button>
+          <button
+            onclick="confirmProcess()"
+            class="flex-1 py-3 rounded-2xl bg-emerald-600 text-white font-bold text-sm hover:bg-emerald-700 transition-all active:scale-95"
+          >
+            Confirm ✓
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOAST -->
+    <div
+      id="toast"
+      class="fixed bottom-20 md:bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-sm font-bold px-5 py-3 rounded-full shadow-xl z-50 opacity-0 translate-y-3 pointer-events-none transition-all duration-200 whitespace-nowrap"
+    ></div>
+
+    <!-- ══════════════════════════════════════
+       JAVASCRIPT
+  ══════════════════════════════════════ -->
+    <script>
+      // ─── DATA ────────────────────────────────────
+      const menuData = [
+        // STARTERS
+        {
+          name: "Lumpiang Shanghai",
+          price: 290,
+          category: "starters",
+          type: "Starters",
+          icon: "🍟",
+        },
+        {
+          name: "Baked Mussels",
+          price: 290,
+          category: "starters",
+          type: "Starters",
+          icon: "🦪",
+        },
+        {
+          name: "Chicken Wings",
+          price: 320,
+          category: "starters",
+          type: "Starters",
+          icon: "🍗",
+        },
+        {
+          name: "Calamares",
+          price: 350,
+          category: "starters",
+          type: "Starters",
+          icon: "🦑",
+        },
+        {
+          name: "Pork Sisig",
+          price: 290,
+          category: "starters",
+          type: "Starters",
+          icon: "🥩",
+        },
+        // SOUP
+        {
+          name: "Cream Fresh Mushroom Soup",
+          price: 220,
+          category: "soup",
+          type: "Soup",
+          icon: "🍲",
+        },
+        {
+          name: "Roasted Pumpkin Soup",
+          price: 220,
+          category: "soup",
+          type: "Soup",
+          icon: "🎃",
+        },
+        // SALAD
+        {
+          name: "Verdance Salad",
+          price: 280,
+          category: "salad",
+          type: "Salad",
+          icon: "🥗",
+        },
+        {
+          name: "Chicken Salad",
+          price: 280,
+          category: "salad",
+          type: "Salad",
+          icon: "🥗",
+        },
+        {
+          name: "Caesar Salad",
+          price: 320,
+          category: "salad",
+          type: "Salad",
+          icon: "🥗",
+        },
+        // BREAKFAST
+        {
+          name: "Daing na Bangus",
+          price: 330,
+          category: "breakfast",
+          type: "All-Day",
+          icon: "🐟",
+        },
+        {
+          name: "Pork Tocino",
+          price: 195,
+          category: "breakfast",
+          type: "All-Day",
+          icon: "🍳",
+        },
+        {
+          name: "Garlic Longganisa",
+          price: 290,
+          category: "breakfast",
+          type: "All-Day",
+          icon: "🌭",
+        },
+        {
+          name: "Beef Taba Barako",
+          price: 420,
+          category: "breakfast",
+          type: "All-Day",
+          icon: "🥩",
+        },
+        {
+          name: "Breakfast Sausage",
+          price: 380,
+          category: "breakfast",
+          type: "Continental",
+          icon: "🌭",
+        },
+        {
+          name: "Ham",
+          price: 380,
+          category: "breakfast",
+          type: "Continental",
+          icon: "🥩",
+        },
+        {
+          name: "Pancakes",
+          price: 330,
+          category: "breakfast",
+          type: "Pancakes",
+          icon: "🥞",
+        },
+        {
+          name: "French Toast",
+          price: 195,
+          category: "breakfast",
+          type: "French Toast",
+          icon: "🍞",
+        },
+        {
+          name: "Spanish",
+          price: 280,
+          category: "breakfast",
+          type: "Omelette",
+          icon: "🍳",
+        },
+        {
+          name: "Ham and Cheese",
+          price: 280,
+          category: "breakfast",
+          type: "Omelette",
+          icon: "🍳",
+        },
+        {
+          name: "Onion Tomato",
+          price: 280,
+          category: "breakfast",
+          type: "Omelette",
+          icon: "🍳",
+        },
+        {
+          name: "Mushroom",
+          price: 280,
+          category: "breakfast",
+          type: "Omelette",
+          icon: "🍄",
+        },
+        // PASTA & NOODLES
+        {
+          name: "Tagliatelle Marinara",
+          price: 360,
+          category: "pasta&noodles",
+          type: "Pasta",
+          icon: "🍝",
+        },
+        {
+          name: "Spaghetti Bolognese",
+          price: 290,
+          category: "pasta&noodles",
+          type: "Pasta",
+          icon: "🍝",
+        },
+        {
+          name: "Carbonara Ala Pancetta",
+          price: 290,
+          category: "pasta&noodles",
+          type: "Pasta",
+          icon: "🍝",
+        },
+        {
+          name: "Aglio E Olio",
+          price: 290,
+          category: "pasta&noodles",
+          type: "Pasta",
+          icon: "🍝",
+        },
+        {
+          name: "Puttanesca",
+          price: 250,
+          category: "pasta&noodles",
+          type: "Pasta",
+          icon: "🍝",
+        },
+        {
+          name: "Bihon Guisado",
+          price: 280,
+          category: "pasta&noodles",
+          type: "Noodles",
+          icon: "🍜",
+        },
+        {
+          name: "Pancit Canton",
+          price: 280,
+          category: "pasta&noodles",
+          type: "Noodles",
+          icon: "🍜",
+        },
+        {
+          name: "Bam-I",
+          price: 280,
+          category: "pasta&noodles",
+          type: "Noodles",
+          icon: "🍜",
+        },
+        {
+          name: "Pad Thai",
+          price: 280,
+          category: "pasta&noodles",
+          type: "Noodles",
+          icon: "🍜",
+        },
+        // PIZZA & SANDWICHES
+        {
+          name: "BBQ Pizza",
+          price: 280,
+          category: "pizza&sandwiches",
+          type: "Pizza",
+          icon: "🍕",
+        },
+        {
+          name: "Aloha Pizza",
+          price: 280,
+          category: "pizza&sandwiches",
+          type: "Pizza",
+          icon: "🍕",
+        },
+        {
+          name: "Verdance Pizza",
+          price: 280,
+          category: "pizza&sandwiches",
+          type: "Pizza",
+          icon: "🍕",
+        },
+        {
+          name: "Margherita Pizza",
+          price: 280,
+          category: "pizza&sandwiches",
+          type: "Pizza",
+          icon: "🍕",
+        },
+        {
+          name: "Chicken Sandwich",
+          price: 280,
+          category: "pizza&sandwiches",
+          type: "Sandwiches",
+          icon: "🥪",
+        },
+        {
+          name: "Verdance Burger",
+          price: 280,
+          category: "pizza&sandwiches",
+          type: "Sandwiches",
+          icon: "🍔",
+        },
+        {
+          name: "Bill's Clubhouse",
+          price: 280,
+          category: "pizza&sandwiches",
+          type: "Sandwiches",
+          icon: "🥪",
+        },
+        {
+          name: "Ham & Cheese Sandwich",
+          price: 280,
+          category: "pizza&sandwiches",
+          type: "Sandwiches",
+          icon: "🥪",
+        },
+        // HOT COFFEE
+        {
+          name: "Brewed Coffee",
+          price: 110,
+          category: "hot",
+          type: "Hot Coffee",
+          icon: "☕",
+        },
+        {
+          name: "Espreso",
+          price: 100,
+          category: "hot",
+          type: "Hot Coffee",
+          icon: "☕",
+        },
+        {
+          name: "Cappuccino",
+          price: 140,
+          category: "hot",
+          type: "Hot Coffee",
+          icon: "☕",
+        },
+        {
+          name: "Cafe Latte",
+          price: 140,
+          category: "hot",
+          type: "Hot Coffee",
+          icon: "☕",
+        },
+        {
+          name: "Vietnamese Latte",
+          price: 180,
+          category: "hot",
+          type: "Hot Coffee",
+          icon: "☕",
+        },
+        // ICED COFFEE
+        {
+          name: "Coffee",
+          price: 115,
+          category: "iced",
+          type: "Iced Coffee",
+          icon: "🧊",
+        },
+        {
+          name: "Capuccino",
+          price: 145,
+          category: "iced",
+          type: "Iced Coffee",
+          icon: "🧊",
+        },
+        {
+          name: "Cafe Latte",
+          price: 145,
+          category: "iced",
+          type: "Iced Coffee",
+          icon: "🧊",
+        },
+        {
+          name: "Vietnamese Latte",
+          price: 205,
+          category: "iced",
+          type: "Iced Coffee",
+          icon: "🧊",
+        },
+        {
+          name: "Spanish Latte",
+          price: 155,
+          category: "iced",
+          type: "Iced Coffee",
+          icon: "🧊",
+        },
+        // MATCHA COFFEE
+        {
+          name: "Macha Latte",
+          price: 150,
+          category: "matcha",
+          type: "Matcha",
+          icon: "🍵",
+        },
+        {
+          name: "Strawberry Matcha",
+          price: 150,
+          category: "matcha",
+          type: "Matcha",
+          icon: "🍵",
+        },
+        {
+          name: "Blue Berry Matcha",
+          price: 180,
+          category: "matcha",
+          type: "Matcha",
+          icon: "🍵",
+        },
+        {
+          name: "Chocolate Matcha",
+          price: 180,
+          category: "matcha",
+          type: "Matcha",
+          icon: "🍵",
+        },
+        {
+          name: "Matcha Cafe Latte",
+          price: 180,
+          category: "matcha",
+          type: "Matcha",
+          icon: "🍵",
+        },
+        // FRESH JUICE
+        {
+          name: "Green Mango",
+          price: 170,
+          category: "juice",
+          type: "Fresh Juice",
+          icon: "🥭",
+        },
+        {
+          name: "Fresh Yellow Mango ",
+          price: 180,
+          category: "juice",
+          type: "Fresh Juice",
+          icon: "🥭",
+        },
+        {
+          name: "Wattermellon",
+          price: 170,
+          category: "juice",
+          type: "Fresh Juice",
+          icon: "🍉",
+        },
+        {
+          name: "Lemon Cucumber",
+          price: 170,
+          category: "juice",
+          type: "Fresh Juice",
+          icon: "🥒",
+        },
+        {
+          name: "Pineapple",
+          price: 170,
+          category: "juice",
+          type: "Fresh Juice",
+          icon: "🍍",
+        },
+        {
+          name: "Caramel",
+          price: 150,
+          category: "coffee-frappe",
+          type: "coffee frappe",
+          icon: "🥤",
+        },
+        {
+          name: "Mocha",
+          price: 150,
+          category: "coffee-frappe",
+          type: "coffee frappe",
+          icon: "🥤",
+        },
+        {
+          name: "Coffee Jelly",
+          price: 180,
+          category: "coffee-frappe",
+          type: "coffee frappe",
+          icon: "🥤",
+        },
+        {
+          name: "Java Chip",
+          price: 180,
+          category: "coffee-frappe",
+          type: "coffee frappe",
+          icon: "🥤",
+        },
+        {
+          name: "Hazelnut",
+          price: 180,
+          category: "coffee-frappe",
+          type: "coffee frappe",
+          icon: "🥤",
+        },
+        {
+          name: "Oreo",
+          price: 180,
+          category: "non-coffee-frappe",
+          type: "non-coffee frappe",
+          icon: "🥤",
+        },
+        {
+          name: "Chocolate Chip",
+          price: 180,
+          category: "non-coffee-frappe",
+          type: "non-coffee frappe",
+          icon: "🥤",
+        },
+        {
+          name: "Strawberry & Cream",
+          price: 180,
+          category: "non-coffee-frappe",
+          type: "non-coffee frappe",
+          icon: "🥤",
+        },
+        {
+          name: "Blueberry cream",
+          price: 180,
+          category: "non-coffee-frappe",
+          type: "non-coffee frappe",
+          icon: "🥤",
+        },
+        {
+          name: "Coke Regular",
+          price: 180,
+          category: "soda",
+          type: "soda",
+          icon: "🥤",
+        },
+        {
+          name: "Coke Zero",
+          price: 40,
+          category: "soda",
+          type: "soda",
+          icon: "🥤",
+        },
+        {
+          name: "Royal Tru Orange",
+          price: 40,
+          category: "soda",
+          type: "soda",
+          icon: "🥤",
+        },
+        {
+          name: "Sprite",
+          price: 40,
+          category: "soda",
+          type: "soda",
+          icon: "🥤",
+        },
+        {
+          name: "Bottled Water",
+          price: 180,
+          category: "water",
+          type: "water",
+          icon: "🥛",
+        },
+        {
+          name: "San Miguel Pale Pilsen",
+          price: 95,
+          category: "alcohol",
+          type: "Bear",
+          icon: "🍺",
+        },
+        {
+          name: "San Miguel Light",
+          price: 95,
+          category: "alcohol",
+          type: "Bear",
+          icon: "🍺",
+        },
+        {
+          name: "Creme Brulee",
+          price: 180,
+          category: "sweet",
+          type: "Desserts",
+          icon: "🍰",
+        },
+        {
+          name: "Fresh Fruit Platter",
+          price: 320,
+          category: "sweet",
+          type: "Desserts",
+          icon: "🍰",
+        },
+        {
+          name: "Brownies Ala Mode",
+          price: 280,
+          category: "sweet",
+          type: "Desserts",
+          icon: "🍰",
+        },
+        {
+          name: "Cheese Tart",
+          price: 280,
+          category: "sweet",
+          type: "Desserts",
+          icon: "🍰",
+        },
+        {
+          name: "Tiramisu",
+          price: 250,
+          category: "sweet",
+          type: "Desserts",
+          icon: "🍍",
+        },
+      ];
+
+      // ─── STATE ───────────────────────────────────
+      let currentOrder = []; // [{ name, price, qty }]
+
+      // ─── RENDER MENU ─────────────────────────────
+      function renderMenu(category, navId) {
+        const grid = document.getElementById("menu-grid");
+        grid.innerHTML = "";
+
+        // Reset all nav active states
+        document.querySelectorAll(".nav-item").forEach((b) => {
+          b.classList.remove("bg-emerald-50");
+          b.querySelector(".nav-icon").classList.remove("bg-emerald-600");
+          b.querySelector(".nav-label").classList.remove("text-emerald-600");
+        });
+        document.querySelectorAll(".sub-btn").forEach((b) => {
+          b.classList.remove("text-emerald-600", "font-black", "bg-emerald-50");
+        });
+
+        // Set active
+        const el = document.getElementById(navId);
+        if (el) {
+          if (el.classList.contains("nav-item")) {
+            el.classList.add("bg-emerald-50");
+            el.querySelector(".nav-icon").classList.add("bg-emerald-600");
+            el.querySelector(".nav-label").classList.add("text-emerald-600");
+          } else {
+            // sub-btn
+            el.classList.add("text-emerald-600", "font-black", "bg-emerald-50");
+          }
+        }
+
+        const items = menuData.filter((i) => i.category === category);
+        let lastType = null;
+
+        items.forEach((item) => {
+          // Section heading
+          if (item.type && item.type !== lastType) {
+            lastType = item.type;
+            const label = document.createElement("div");
+            label.className = "col-span-full mt-4 first:mt-0";
+            label.innerHTML = `<h2 class="text-[10px] font-black text-slate-400 uppercase tracking-widest pb-2 border-b border-slate-200">${item.type}</h2>`;
+            grid.appendChild(label);
+          }
+
+          // Card
+          const card = document.createElement("button");
+          card.className =
+            "bg-white p-3 md:p-5 rounded-2xl md:rounded-3xl shadow-sm border border-slate-200 flex flex-col items-center text-center hover:border-emerald-400 hover:shadow-xl hover:-translate-y-1 transition-all active:scale-95 group";
+          card.innerHTML = `
+        <div class="w-12 h-12 md:w-16 md:h-16 bg-slate-50 rounded-xl md:rounded-2xl mb-2 md:mb-3 flex items-center justify-center text-2xl md:text-3xl group-hover:scale-110 transition-transform">${item.icon}</div>
+        <h3 class="font-black text-slate-800 text-[10px] md:text-xs uppercase tracking-tight leading-tight mb-2">${item.name}</h3>
+        <div class="mt-auto bg-emerald-50 text-emerald-700 font-black px-3 py-0.5 rounded-full text-[10px] md:text-xs">₱${item.price.toLocaleString()}</div>
+      `;
+          card.onclick = () => addToOrder(item.name, item.price);
+          grid.appendChild(card);
+        });
+
+        grid.scrollTop = 0;
+      }
+
+      // ─── ORDER LOGIC ─────────────────────────────
+      function addToOrder(name, price) {
+        const existing = currentOrder.find((i) => i.name === name);
+        if (existing) {
+          existing.qty += 1;
+        } else {
+          currentOrder.push({ name, price, qty: 1 });
+        }
+        updateReceipt();
+        showToast(`${name} added ✓`);
+      }
+
+      // +/- one quantity; removes row when hits 0
+      function changeQty(index, delta) {
+        if (!currentOrder[index]) return;
+        currentOrder[index].qty += delta;
+        if (currentOrder[index].qty <= 0) currentOrder.splice(index, 1);
+        updateReceipt();
+      }
+
+      // Delete specific item entirely (✕ button)
+      function removeItem(index) {
+        const name = currentOrder[index]?.name || "Item";
+        currentOrder.splice(index, 1);
+        updateReceipt();
+        showToast(`${name} removed`);
+      }
+
+      // ─── CLEAR ALL MODAL ─────────────────────────
+      function openClearModal() {
+        if (currentOrder.length === 0) return;
+        document.getElementById("clear-modal").classList.remove("hidden");
+      }
+      function closeClearModal() {
+        document.getElementById("clear-modal").classList.add("hidden");
+      }
+      function confirmClear() {
+        currentOrder = [];
+        updateReceipt();
+        closeClearModal();
+        showToast("Order cleared");
+      }
+
+      // ─── PROCESS ORDER MODAL ─────────────────────
+      function openProcessModal() {
+        if (currentOrder.length === 0) return;
+        const total = currentOrder.reduce((s, i) => s + i.price * i.qty, 0);
+        document.getElementById("modal-total").textContent =
+          `₱${total.toLocaleString()}`;
+        document.getElementById("process-modal").classList.remove("hidden");
+      }
+      function closeProcessModal() {
+        document.getElementById("process-modal").classList.add("hidden");
+      }
+      function confirmProcess() {
+        closeProcessModal();
+        currentOrder = [];
+        updateReceipt();
+        closeCart();
+        showToast("Order processed! ✅");
+      }
+
+      // Clicking backdrop closes modal
+      function handleModalBackdrop(e, modalId) {
+        if (e.target.id === modalId) {
+          document.getElementById(modalId).classList.add("hidden");
+        }
+      }
+
+      // ─── UPDATE RECEIPT ───────────────────────────
+      function updateReceipt() {
+        const list = document.getElementById("receipt-list");
+        const totalEl = document.getElementById("total-price");
+        const processBtn = document.getElementById("process-btn");
+        const badge = document.getElementById("order-badge");
+        const bubble = document.getElementById("cart-bubble");
+
+        if (currentOrder.length === 0) {
+          list.innerHTML =
+            '<p class="text-sm text-slate-400 italic text-center mt-16">Tap items to order</p>';
+          totalEl.textContent = "₱0";
+          processBtn.disabled = true;
+          badge.classList.add("hidden");
+          bubble.classList.add("hidden");
+          bubble.style.display = "";
+          return;
+        }
+
+        const totalQty = currentOrder.reduce((s, i) => s + i.qty, 0);
+        const totalPrice = currentOrder.reduce(
+          (s, i) => s + i.price * i.qty,
+          0,
+        );
+
+        badge.textContent = totalQty;
+        badge.classList.remove("hidden");
+        bubble.textContent = totalQty;
+        bubble.classList.remove("hidden");
+        bubble.style.display = "flex";
+
+        list.innerHTML = "";
+
+        currentOrder.forEach((item, index) => {
+          const row = document.createElement("div");
+          row.className =
+            "flex items-center gap-2 py-3 border-b border-slate-100 last:border-0";
+          row.innerHTML = `
+        <!-- Name & unit price -->
+        <div class="flex-1 min-w-0">
+          <p class="text-xs font-bold text-slate-800 truncate">${item.name}</p>
+          <p class="text-[10px] text-slate-400 mt-0.5">₱${item.price.toLocaleString()} each</p>
+        </div>
+
+        <!-- Qty controls -->
+        <div class="flex items-center gap-1 shrink-0">
+          <button onclick="changeQty(${index}, -1)"
+            class="w-6 h-6 rounded-lg border border-slate-200 bg-white text-slate-600 text-sm font-bold flex items-center justify-center hover:bg-red-50 hover:border-red-300 hover:text-red-500 transition-all active:scale-90">−</button>
+          <span class="text-xs font-black text-slate-800 w-5 text-center">${item.qty}</span>
+          <button onclick="changeQty(${index}, 1)"
+            class="w-6 h-6 rounded-lg border border-slate-200 bg-white text-slate-600 text-sm font-bold flex items-center justify-center hover:bg-emerald-50 hover:border-emerald-300 hover:text-emerald-600 transition-all active:scale-90">+</button>
+        </div>
+
+        <!-- Subtotal -->
+        <span class="text-xs font-black text-slate-900 shrink-0 w-16 text-right">₱${(item.price * item.qty).toLocaleString()}</span>
+
+        <!-- Delete this specific item (✕) -->
+        <button onclick="removeItem(${index})"
+          class="w-6 h-6 rounded-lg border border-slate-200 bg-white text-slate-300 text-xs flex items-center justify-center hover:bg-red-50 hover:border-red-300 hover:text-red-500 transition-all active:scale-90 shrink-0"
+          title="Remove ${item.name}">✕</button>
+      `;
+          list.appendChild(row);
+        });
+
+        totalEl.textContent = `₱${totalPrice.toLocaleString()}`;
+        processBtn.disabled = false;
+      }
+
+      // ─── SIDEBAR TOGGLE ──────────────────────────
+      function toggleOpeners() {
+        const sub = document.getElementById("openers-sub");
+        sub.classList.toggle("hidden");
+        sub.classList.toggle("flex");
+      }
+
+      function toggleMainCourses() {
+        const sub = document.getElementById("maincourses-sub");
+        sub.classList.toggle("hidden");
+        sub.classList.toggle("flex");
+      }
+
+      function toggleBeverages() {
+        const sub = document.getElementById("beverages-sub");
+        sub.classList.toggle("hidden");
+        sub.classList.toggle("flex");
+      }
+      function toggleCloser() {
+        const sub = document.getElementById("closer-sub");
+        sub.classList.toggle("hidden");
+        sub.classList.toggle("flex");
+      }
+
+      // ─── MOBILE CART SHEET ───────────────────────
+      function openCart() {
+        const p = document.getElementById("cart-panel");
+        p.classList.remove("translate-y-full");
+        p.classList.add("translate-y-0");
+      }
+      function closeCart() {
+        const p = document.getElementById("cart-panel");
+        p.classList.add("translate-y-full");
+        p.classList.remove("translate-y-0");
+      }
+
+      // ─── TOAST ───────────────────────────────────
+      function showToast(msg) {
+        const t = document.getElementById("toast");
+        t.textContent = msg;
+        t.classList.remove("opacity-0", "translate-y-3");
+        t.classList.add("opacity-100", "translate-y-0");
+        clearTimeout(t._timer);
+        t._timer = setTimeout(() => {
+          t.classList.add("opacity-0", "translate-y-3");
+          t.classList.remove("opacity-100", "translate-y-0");
+        }, 1800);
+      }
+
+      // ─── INIT ────────────────────────────────────
+      renderMenu("starters", "nav-starters");
+      document.getElementById("openers-sub").classList.remove("hidden");
+      document.getElementById("openers-sub").classList.add("flex");
+    </script>
+  </body>
+</html>
